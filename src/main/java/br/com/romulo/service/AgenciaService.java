@@ -1,6 +1,8 @@
 package br.com.romulo.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import br.com.romulo.domain.Agencia;
@@ -15,30 +17,36 @@ import java.util.List;
 
 @ApplicationScoped
 public class AgenciaService {
+	@Inject
 	@RestClient
     SituacaoCadastralHttpService situacaoCadastralHttpService;
 	private final AgenciaRepository agenciaRepository;
     private final List<Agencia> agencias = new ArrayList<>();
     
+    @Inject
     AgenciaService(AgenciaRepository agenciaRepository) {
         this.agenciaRepository = agenciaRepository;
     }
 
     public void cadastrar(Agencia agencia) {
-        AGenciaHttp agenciaHttp = situacaoCadastralHttpService.buscarPorCnpj(agencia.getCnpj());
-        if (agenciaHttp != null && agenciaHttp.getSituacaoCadastral() == SituacaoCadastral.ATIVO) {
-            agencias.add(agencia);
-        } else {
-            throw new AgenciaNaoAtivaOuNaoEncontradaException();
-        }
+        //AGenciaHttp agenciaExistente  = situacaoCadastralHttpService.buscarPorCnpj(agencia.getCnpj());
+        // Se já existe uma agência ativa cadastrada com o mesmo CNPJ, não deixar cadastrar
+        //if (agenciaExistente != null && agenciaExistente.getSituacaoCadastral() == SituacaoCadastral.ATIVO) {
+        //    throw new AgenciaNaoAtivaOuNaoEncontradaException();
+        //}
+        //if (agenciaExistente == null) {
+        	agenciaRepository.persist(agencia);
+        //}
     }
 
-    public Agencia buscarPorId(Integer id) {
-        return agencias.stream().filter(agencia -> agencia.getId().equals(id)).toList().getFirst();
+    public Agencia buscarPorId(Long id) {
+        //return agencias.stream().filter(agencia -> agencia.getId().equals(id)).toList().getFirst();
+    	return agenciaRepository.findById(id);
     }
 
-    public void deletar(Integer id) {
-        agencias.removeIf(agencia -> agencia.getId().equals(id));
+    public void deletar(Long id) {
+        //agencias.removeIf(agencia -> agencia.getId().equals(id));
+    	agenciaRepository.deleteById(id);
     }
 
 //    public void alterar(Agencia agencia) {
