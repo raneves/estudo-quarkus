@@ -11,6 +11,7 @@ import br.com.romulo.domain.http.SituacaoCadastral;
 import br.com.romulo.exception.AgenciaNaoAtivaOuNaoEncontradaException;
 import br.com.romulo.repository.AgenciaRepository;
 import br.com.romulo.service.http.SituacaoCadastralHttpService;
+import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class AgenciaService {
         this.agenciaRepository = agenciaRepository;
     }
 
+    @Transactional
     public void cadastrar(Agencia agencia) {
         //AGenciaHttp agenciaExistente  = situacaoCadastralHttpService.buscarPorCnpj(agencia.getCnpj());
         // Se já existe uma agência ativa cadastrada com o mesmo CNPJ, não deixar cadastrar
@@ -44,6 +46,7 @@ public class AgenciaService {
     	return agenciaRepository.findById(id);
     }
 
+    @Transactional
     public void deletar(Long id) {
         //agencias.removeIf(agencia -> agencia.getId().equals(id));
     	agenciaRepository.deleteById(id);
@@ -54,6 +57,7 @@ public class AgenciaService {
 //        agencias.add(agencia);
 //    }
     
+    @Transactional
     public void alterar(Agencia agencia) {
         agenciaRepository.update("nome = ?1, razaoSocial = ?2, cnpj = ?3 where id = ?4", agencia.getNome(), agencia.getRazaoSocial(), agencia.getCnpj(), agencia.getId());
     }

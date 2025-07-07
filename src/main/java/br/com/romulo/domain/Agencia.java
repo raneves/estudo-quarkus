@@ -15,6 +15,10 @@ public class Agencia {
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;
 
+    Agencia() {
+
+    }
+    
     
     public Agencia(Integer id, String nome, String razaoSocial, String cnpj, Endereco endereco) {
         this.id = id;

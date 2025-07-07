@@ -15,6 +15,9 @@ public class Endereco {
     private String complemento;
     private Integer numero;
     
+    Endereco() {
+
+    }
     
     public Endereco(Integer id, String rua, String logradouro, String complemento, Integer numero) {
         this.id = id;
