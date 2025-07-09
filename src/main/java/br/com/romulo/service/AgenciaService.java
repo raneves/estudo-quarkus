@@ -13,6 +13,7 @@ import br.com.romulo.repository.AgenciaRepository;
 import br.com.romulo.service.http.SituacaoCadastralHttpService;
 import jakarta.transaction.Transactional;
 import io.quarkus.logging.Log;
+import io.micrometer.core.instrument.MeterRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,11 @@ public class AgenciaService {
     SituacaoCadastralHttpService situacaoCadastralHttpService;
 	private final AgenciaRepository agenciaRepository;
     private final List<Agencia> agencias = new ArrayList<>();
+    private final MeterRegistry meterRegistry;
     
-    @Inject
-    AgenciaService(AgenciaRepository agenciaRepository) {
+    AgenciaService(AgenciaRepository agenciaRepository, MeterRegistry meterRegistry) {
         this.agenciaRepository = agenciaRepository;
+        this.meterRegistry = meterRegistry;
     }
 
     @Transactional
@@ -39,7 +41,7 @@ public class AgenciaService {
         //}
         //if (agenciaExistente == null) {
     		Log.info("Agencia com CNPJ " + agencia.getCnpj() + " foi adicionada");
-      
+    		 this.meterRegistry.counter("agencia_adicionada_count").increment();
         	agenciaRepository.persist(agencia);
         //}
     }
